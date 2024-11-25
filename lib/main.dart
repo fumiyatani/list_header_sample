@@ -31,7 +31,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   late ScrollController scrollController;
-  bool _isTopAtEdge = false;
+  bool _isTopAtEdge = true;
   double prevPixels = 0.0;
   double scrolledPixel = 0.0;
 
@@ -69,7 +69,6 @@ class _MyHomePageState extends State<MyHomePage> {
           _isTopAtEdge = true;
         });
       }
-      print('_isTopAtEdge: $_isTopAtEdge');
       // スクロール位置を保存
       prevPixels = currentPixels;
     });
@@ -96,10 +95,21 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 Expanded(
                   child: AnimatedContainer(
+                    alignment: Alignment.bottomRight,
                     height: _isTopAtEdge ? 300 : 52,
                     duration: const Duration(milliseconds: 400),
                     color: _isTopAtEdge ? Colors.red : Colors.yellow,
                     curve: Curves.fastOutSlowIn,
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_upward),
+                      onPressed: () {
+                        scrollController.animateTo(
+                          0.0,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeIn,
+                        );
+                      },
+                    ),
                   ),
                 ),
               ],
@@ -119,9 +129,15 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          scrollController.animateTo(
+            scrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeIn,
+          );
+        },
         tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.arrow_downward),
       ),
     );
   }
