@@ -33,6 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late ScrollController scrollController;
   bool _isTopAtEdge = false;
   double prevPixels = 0.0;
+  double scrolledPixel = 0.0;
 
   @override
   void initState() {
@@ -91,32 +92,18 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: Column(
           children: [
-            if (_isTopAtEdge)
-              Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      color: Colors.red,
-                      child: const SizedBox(
-                        height: 300,
-                      ),
-                    ),
+            Row(
+              children: [
+                Expanded(
+                  child: AnimatedContainer(
+                    height: _isTopAtEdge ? 300 : 52,
+                    duration: const Duration(milliseconds: 400),
+                    color: _isTopAtEdge ? Colors.red : Colors.yellow,
+                    curve: Curves.fastOutSlowIn,
                   ),
-                ],
-              )
-            else
-              Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      color: Colors.yellow,
-                      child: const SizedBox(
-                        height: 52,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
+            ),
             Expanded(
               child: ListView.builder(
                 controller: scrollController,
