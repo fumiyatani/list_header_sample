@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sticky_header_sample/expandable_header_sample.dart';
 import 'package:sticky_header_sample/header_animation_sample.dart';
-import 'package:sticky_header_sample/sticky_header_sample.dart';
 
 class DrawerNavigationScreen extends StatefulWidget {
   const DrawerNavigationScreen({super.key});
@@ -27,7 +27,7 @@ class _DrawerNavigationScreen extends State<DrawerNavigationScreen> {
           title: 'HeaderAnimationSample',
         );
       case 1:
-        return const StickyHeaderSample();
+        return const ExpandableHeaderSample();
       default:
         return const HeaderAnimationSample(
           title: 'HeaderAnimationSample',
@@ -40,7 +40,7 @@ class _DrawerNavigationScreen extends State<DrawerNavigationScreen> {
       case 0:
         return 'HeaderAnimationSample';
       case 1:
-        return 'StickyHeaderSample';
+        return 'ExpandableHeaderSample';
       default:
         return 'HeaderAnimationSample';
     }
@@ -96,7 +96,7 @@ class _DrawerNavigationScreen extends State<DrawerNavigationScreen> {
             Builder(
               builder: (context) {
                 return ListTile(
-                  title: const Text("StickyHeaderSample"),
+                  title: const Text("ExpandableHeaderSample"),
                   onTap: () => onTappedListItem(context, 1),
                   selected: _selectedIndex == 1,
                 );
