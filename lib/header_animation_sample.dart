@@ -61,6 +61,14 @@ class _HeaderAnimationSampleState extends State<HeaderAnimationSample> {
     scrollController.dispose();
   }
 
+  void _scrollUp() {
+    scrollController.animateTo(
+      0.0,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeIn,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,21 +82,14 @@ class _HeaderAnimationSampleState extends State<HeaderAnimationSample> {
             Row(
               children: [
                 Expanded(
-                  child: AnimatedContainer(
-                    alignment: Alignment.bottomRight,
-                    height: _isTopAtEdge ? 300 : 52,
-                    duration: const Duration(milliseconds: 400),
-                    color: _isTopAtEdge ? Colors.red : Colors.yellow,
-                    curve: Curves.fastOutSlowIn,
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_upward),
-                      onPressed: () {
-                        scrollController.animateTo(
-                          0.0,
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeIn,
-                        );
-                      },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: HeaderWithAnimation(
+                      isOpened: _isTopAtEdge,
+                      openChild: const ConfigList(),
+                      closeChild: ShowingConfigChips(
+                        onPressedUp: _scrollUp,
+                      ),
                     ),
                   ),
                 ),
@@ -108,17 +109,124 @@ class _HeaderAnimationSampleState extends State<HeaderAnimationSample> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          scrollController.animateTo(
-            scrollController.position.maxScrollExtent,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeIn,
-          );
-        },
-        tooltip: 'Increment',
-        child: const Icon(Icons.arrow_downward),
-      ),
+    );
+  }
+}
+
+class ConfigList extends StatelessWidget {
+  const ConfigList({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final titleMediumStyle = Theme.of(context).textTheme.titleMedium;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Text('設定項目1', style: titleMediumStyle),
+        const TextField(),
+        const SizedBox(
+          height: 8,
+        ),
+        Text('設定項目2', style: titleMediumStyle),
+        const TextField(),
+        const SizedBox(
+          height: 8,
+        ),
+        Text('設定項目3', style: titleMediumStyle),
+        const TextField(),
+        const SizedBox(
+          height: 8,
+        ),
+      ],
+    );
+  }
+}
+
+class ShowingConfigChips extends StatelessWidget {
+  const ShowingConfigChips({
+    required this.onPressedUp,
+    super.key,
+  });
+
+  final void Function() onPressedUp;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        const Text('設定項目1: 内容'),
+        const SizedBox(
+          width: 4,
+        ),
+        const Text('設定項目2: 内容'),
+        const SizedBox(
+          width: 4,
+        ),
+        const Text('設定項目3: 内容'),
+        const SizedBox(
+          width: 4,
+        ),
+        IconButton(
+          icon: const Icon(Icons.arrow_upward),
+          onPressed: onPressedUp,
+        ),
+      ],
+    );
+  }
+}
+
+class HeaderWithAnimation extends StatelessWidget {
+  const HeaderWithAnimation({
+    required this.isOpened,
+    required this.openChild,
+    required this.closeChild,
+    this.milliseconds = 400,
+    super.key,
+  });
+
+  final bool isOpened;
+  final Widget openChild;
+  final Widget closeChild;
+  final int milliseconds;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSwitcher(
+      duration: Duration(milliseconds: milliseconds),
+      switchInCurve: Curves.easeInOut,
+      switchOutCurve: Curves.easeInOut,
+      transitionBuilder: (child, animation) {
+        final customFadeAnimation = Tween<double>(
+          begin: 0.0,
+          end: 1.0,
+        ).animate(CurvedAnimation(
+          parent: animation,
+          // 70%以上の時だけアニメーションする。
+          // 70%未満の間はアニメーションしないため、
+          // open/closeどちらの Widget も非表示となる。
+          curve: const Interval(0.7, 1.0),
+        ));
+        return FadeTransition(
+          // opacity: animation,
+          opacity: customFadeAnimation,
+          child: SizeTransition(
+            sizeFactor: animation,
+            child: child,
+          ),
+        );
+      },
+      // 明示的に key を渡すことで、新しい Widget として再構築させることができる。
+      child: isOpened
+          ? KeyedSubtree(
+              key: const ValueKey('openChild'),
+              child: openChild,
+            )
+          : KeyedSubtree(
+              key: const ValueKey('closeChild'),
+              child: closeChild,
+            ),
     );
   }
 }
