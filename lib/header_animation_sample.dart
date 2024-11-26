@@ -71,12 +71,8 @@ class _HeaderAnimationSampleState extends State<HeaderAnimationSample> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
+    return SafeArea(
+      child: Center(
         child: Column(
           children: [
             Row(
