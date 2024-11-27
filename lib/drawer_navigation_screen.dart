@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sticky_header_sample/expandable_header_sample.dart';
 import 'package:sticky_header_sample/header_animation_sample.dart';
+import 'package:sticky_header_sample/sliver_list_with_animated_widget_sample.dart';
 
 class DrawerNavigationScreen extends StatefulWidget {
   const DrawerNavigationScreen({super.key});
@@ -28,6 +29,8 @@ class _DrawerNavigationScreen extends State<DrawerNavigationScreen> {
         );
       case 1:
         return const ExpandableHeaderSample();
+      case 2:
+        return const SliverListWithAnimatedWidgetSample();
       default:
         return const HeaderAnimationSample(
           title: 'HeaderAnimationSample',
@@ -41,6 +44,8 @@ class _DrawerNavigationScreen extends State<DrawerNavigationScreen> {
         return 'HeaderAnimationSample';
       case 1:
         return 'ExpandableHeaderSample';
+      case 2:
+        return 'SliverList + AnimatedWidgetSample';
       default:
         return 'HeaderAnimationSample';
     }
@@ -87,7 +92,7 @@ class _DrawerNavigationScreen extends State<DrawerNavigationScreen> {
             Builder(
               builder: (context) {
                 return ListTile(
-                  title: const Text("HeaderAnimationSample"),
+                  title: Text(_selectedTitle(0)),
                   onTap: () => onTappedListItem(context, 0),
                   selected: _selectedIndex == 0,
                 );
@@ -96,9 +101,18 @@ class _DrawerNavigationScreen extends State<DrawerNavigationScreen> {
             Builder(
               builder: (context) {
                 return ListTile(
-                  title: const Text("ExpandableHeaderSample"),
+                  title: Text(_selectedTitle(1)),
                   onTap: () => onTappedListItem(context, 1),
                   selected: _selectedIndex == 1,
+                );
+              },
+            ),
+            Builder(
+              builder: (context) {
+                return ListTile(
+                  title: Text(_selectedTitle(2)),
+                  onTap: () => onTappedListItem(context, 2),
+                  selected: _selectedIndex == 2,
                 );
               },
             ),
